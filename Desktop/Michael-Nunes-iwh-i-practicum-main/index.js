@@ -24,10 +24,10 @@ app.get('/homepage-pets', async (req, res) => {
   }
   try {
     const response = await axios.get(petsEndpoint, { headers, params });
-    console.log('Resposta da API:', JSON.stringify(response.data, null, 2)); 
-    const pets = response.data.results; 
-    console.log('Dados de pets:', JSON.stringify(pets, null, 2)); 
-    res.render('pets', { pets: pets }); 
+    console.log('API Response:', JSON.stringify(response.data, null, 2));
+    const pets = response.data.results;
+    console.log('Pet data:', JSON.stringify(pets, null, 2));
+    res.render('homepage', { pets: pets });
   } catch (error) {
     console.error(error);
   }
@@ -49,7 +49,7 @@ app.post('/update-pets', async (req, res) => {
     'Content-Type': 'application/json'
   }
   const data = {
-    properties: { 
+    properties: {
       pet_name: req.body.pet_name,
       pet_type: req.body.pet_type,
       food_preference: req.body.food_preference
@@ -57,7 +57,7 @@ app.post('/update-pets', async (req, res) => {
   }
   try {
     const response = await axios.post(petsEndpoint, data, { headers });
-    console.log('Resposta da API:', JSON.stringify(response.data, null, 2));
+    console.log('API Response:', JSON.stringify(response.data, null, 2));
     res.redirect('/homepage-pets'); // Redirects to home page
   } catch (error) {
     console.error(error);
