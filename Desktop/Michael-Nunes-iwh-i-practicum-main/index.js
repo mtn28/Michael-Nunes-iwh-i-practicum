@@ -20,7 +20,7 @@ app.get('/homepage-pets', async (req, res) => {
     'Content-Type': 'application/json'
   }
   const params = {
-    properties: ['pet_name', 'pet_type', 'food_preferences'] // Adicione os nomes das propriedades que você deseja aqui
+    properties: ['pet_name', 'pet_type', 'food_preferences'] // Add the property names you want here
   }
   try {
     const response = await axios.get(petsEndpoint, { headers, params });
@@ -33,45 +33,36 @@ app.get('/homepage-pets', async (req, res) => {
   }
 })
 
-app.get('/update-pets', async (req, res) => {
-  const petsEndpoint = 'https://api.hubspot.com/crm/v3/objects/pets';
-  const headers = {
-    Authorization: `Bearer ${private_app_token}`,
-    'Content-Type': 'application/json'
-  }
-  const params = {
-    properties: ['pet_name', 'pet_type', 'food_preference']
-  }
+app.get('/update-pets', (req, res) => {
   try {
-    const response = await axios.get(petsEndpoint, { headers, params });
-    console.log('Resposta da API:', JSON.stringify(response.data, null, 2));
-    const pets = response.data.results;
-    console.log('Dados de pets:', JSON.stringify(pets, null, 2));
-    res.render('updates', { pets: pets }); // Render the updates.pug template passing pet data
+    res.render('updates', { pageTitle: 'Update Custom Object Form | Integrating With HubSpot I Practicum' }); // Render the updates.pug template
   } catch (error) {
     console.error(error);
   }
 });
 
 
-app.post('/pets', async (req, res) => {
-  const petsEndpoint = 'https://api.hubspot.com/crm/v3/objects/pets?properties=pet_name,pet_type,food_preference';
+app.post('/update-pets', async (req, res) => {
+  const petsEndpoint = 'https://api.hubspot.com/crm/v3/objects/pets';
   const headers = {
     Authorization: `Bearer ${private_app_token}`,
     'Content-Type': 'application/json'
   }
-  const params = {
-    properties: ['pet_name', 'pet_type', 'food_preferences'] // Adicione os nomes das propriedades que você deseja aqui
+  const data = {
+    properties: { 
+      pet_name: req.body.pet_name,
+      pet_type: req.body.pet_type,
+      food_preference: req.body.food_preference
+    }
   }
   try {
-    const response = await axios.get(petsEndpoint, { headers, params });
-    console.log('Resposta da API:', JSON.stringify(response.data, null, 2)); 
-    const pets = response.data.results;
-    console.log('Dados de pets:', JSON.stringify(pets, null, 2)); 
-    res.render('pets', { pets: pets });
+    const response = await axios.post(petsEndpoint, data, { headers });
+    console.log('Resposta da API:', JSON.stringify(response.data, null, 2));
+    res.redirect('/homepage-pets'); // Redirects to home page
   } catch (error) {
     console.error(error);
   }
-})
+});
+
 
 app.listen(3000, () => console.log('Server running on port 3000')); 
